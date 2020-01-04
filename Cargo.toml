@@ -1,0 +1,12 @@
+[package]
+name = "diffin"
+version = "0.0.0"
+authors = ["Nikolai Vazquez"]
+license = "MIT OR Apache-2.0"
+edition = "2018"
+description = "A binary diffing tool."
+repository = "https://github.com/diffin/diffin"
+homepage = "https://github.com/diffin/diffin"
+documentation = "https://docs.rs/diffin"
+categories = ["algorithms", "text-processing"]
+keywords = ["diff", "binary"]

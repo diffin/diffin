@@ -62,11 +62,20 @@ impl<'a> Iterator for SuffixIter<'a, str> {
     }
 
     fn count(self) -> usize {
+        // Takes advantage of the fact that pointer arithmetic is not allowed to
+        // overflow, thus allowing the compiler to optimize this further.
+        #[inline(always)]
+        unsafe fn add_unchecked(a: usize, b: usize) -> usize {
+            (a as *const u8).add(b) as usize
+        }
         self.suffix.as_bytes().iter().fold(0, |n, &b| {
             // Taken from `str::is_char_boundary`:
             // "This is bit magic equivalent to: b < 128 || b >= 192"
             let is_char_boundary = (b as i8) >= -0x40;
-            n + is_char_boundary as usize
+
+            // SAFETY: `n + is_char_boundary as usize` can never overflow since
+            // it is at most `suffix.len()`, which is less than `isize::MAX`.
+            unsafe { add_unchecked(n, is_char_boundary as usize) }
         })
     }
 }

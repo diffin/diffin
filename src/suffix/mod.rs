@@ -22,6 +22,6 @@ pub use iter::SuffixIter;
 /// assert_eq!(iter.next(), None);
 /// ```
 #[inline]
-pub const fn iter<'a, S: ?Sized>(s: &'a S) -> SuffixIter<'a, S> {
+pub const fn iter<S: ?Sized>(s: &S) -> SuffixIter<S> {
     SuffixIter::new(s)
 }

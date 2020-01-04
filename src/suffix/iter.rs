@@ -1,4 +1,4 @@
-use std::mem;
+use std::{iter, mem};
 
 /// A simple iterator over the suffixes of a UTF-8 string (`&str`) or an
 /// arbitrary slice (`&[T]`).
@@ -46,6 +46,8 @@ impl<'a> Iterator for SuffixIter<'a, str> {
     }
 }
 
+impl<'a> iter::FusedIterator for SuffixIter<'a, str> {}
+
 impl<'a, T> Iterator for SuffixIter<'a, [T]> {
     type Item = &'a [T];
 
@@ -67,6 +69,8 @@ impl<'a, T> ExactSizeIterator for SuffixIter<'a, [T]> {
         self.suffix.len()
     }
 }
+
+impl<'a, T> iter::FusedIterator for SuffixIter<'a, [T]> {}
 
 impl<'a, S: ?Sized> SuffixIter<'a, S> {
     /// Creates a new instance from `suffix`, treating it as the first suffix if

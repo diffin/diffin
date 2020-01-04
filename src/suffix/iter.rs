@@ -2,6 +2,22 @@ use std::{iter, mem};
 
 /// A simple iterator over the suffixes of a UTF-8 string (`&str`) or an
 /// arbitrary slice (`&[T]`).
+///
+/// # Examples
+///
+/// Every iteration drops one element from the front:
+///
+/// ```
+/// let s = "hello";
+/// let mut iter = diffin::suffix::iter(s);
+///
+/// assert_eq!(iter.next(), Some("hello"));
+/// assert_eq!(iter.next(), Some("ello"));
+/// assert_eq!(iter.next(), Some("llo"));
+/// assert_eq!(iter.next(), Some("lo"));
+/// assert_eq!(iter.next(), Some("o"));
+/// assert_eq!(iter.next(), None);
+/// ```
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SuffixIter<'a, S: ?Sized> {
     suffix: &'a S,

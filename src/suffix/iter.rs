@@ -44,6 +44,15 @@ impl<'a> Iterator for SuffixIter<'a, str> {
         let len = self.suffix.len();
         ((len + 3) / 4, Some(len))
     }
+
+    fn count(self) -> usize {
+        self.suffix.as_bytes().iter().fold(0, |n, &b| {
+            // Taken from `str::is_char_boundary`:
+            // "This is bit magic equivalent to: b < 128 || b >= 192"
+            let is_char_boundary = (b as i8) >= -0x40;
+            n + is_char_boundary as usize
+        })
+    }
 }
 
 impl<'a> iter::FusedIterator for SuffixIter<'a, str> {}
@@ -60,6 +69,11 @@ impl<'a, T> Iterator for SuffixIter<'a, [T]> {
     #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         (self.suffix.len(), Some(self.suffix.len()))
+    }
+
+    #[inline]
+    fn count(self) -> usize {
+        self.len()
     }
 }
 
@@ -78,5 +92,49 @@ impl<'a, S: ?Sized> SuffixIter<'a, S> {
     #[inline]
     pub const fn new(suffix: &'a S) -> Self {
         Self { suffix }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const CHARS: &[&str] = &[
+        // 1 byte
+        "\u{0000}",
+        "\u{007F}",
+        // 2 bytes
+        "\u{0080}",
+        "\u{07FF}",
+        // 3 bytes
+        "\u{0800}",
+        "\u{FFFF}",
+        // 4 bytes
+        "\u{10000}",
+        "\u{10FFFF}",
+    ];
+
+    #[test]
+    fn str_count() {
+        assert_eq!(SuffixIter::new("").count(), 0);
+
+        for a in CHARS {
+            for b in CHARS {
+                for c in CHARS {
+                    for d in CHARS {
+                        let s = format!("{}{}{}{}", a, b, c, d);
+                        let s = s.as_str();
+                        let count = SuffixIter::new(s).count();
+
+                        assert_eq!(count, s.chars().count());
+
+                        assert_eq!(
+                            count,
+                            SuffixIter::new(s).fold(0, |n, _| n + 1)
+                        );
+                    }
+                }
+            }
+        }
     }
 }

@@ -16,3 +16,5 @@
 //! [@NikolaiVazquez]: https://twitter.com/nikolaivazquez
 
 #![deny(missing_docs)]
+
+pub mod suffix;

@@ -1,5 +1,7 @@
 //! # Diffin
 //!
+//! [![CI Status](https://github.com/diffin/diffin/workflows/CI/badge.svg)](https://github.com/diffin/diffin/actions?query=workflow%3ACI)
+//!
 //! A work-in-progress binary diffing tool by [@NikolaiVazquez].
 //!
 //! ## License

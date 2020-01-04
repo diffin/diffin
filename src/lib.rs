@@ -14,3 +14,5 @@
 //! at your choosing.
 //!
 //! [@NikolaiVazquez]: https://twitter.com/nikolaivazquez
+
+#![deny(missing_docs)]

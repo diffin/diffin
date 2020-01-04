@@ -40,7 +40,9 @@ impl<'a> Iterator for SuffixIter<'a, str> {
 
     #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
-        (self.suffix.len(), None)
+        // Adapted from `str::Chars::size_hint`.
+        let len = self.suffix.len();
+        ((len + 3) / 4, Some(len))
     }
 }
 
